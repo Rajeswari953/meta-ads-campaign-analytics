@@ -1,7 +1,12 @@
 import streamlit as st
+
 import pandas as pd
+
 import plotly.express as px
+
 import plotly.graph_objects as go
+
+
 
 # =========================================================
 # PAGE
@@ -14,11 +19,14 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+
+
 # =========================================================
 # DESIGN
 # =========================================================
 
 st.markdown("""
+
 <style>
 
 .stApp {
@@ -71,6 +79,7 @@ h1, h2, h3, p, label {
     font-size: 25px;
     font-weight: 800;
     margin-bottom: 35px;
+    letter-spacing: 0.5px;
 }
 
 .brand span {
@@ -79,10 +88,11 @@ h1, h2, h3, p, label {
 
 .card {
     background: #141416;
-    border: 1px solid #29292f;
+    border: 1px solid #4b2a9a;
     border-radius: 15px;
     padding: 18px;
     min-height: 105px;
+    box-shadow: 0 8px 24px rgba(108, 53, 255, 0.08);
 }
 
 .card-label {
@@ -138,17 +148,28 @@ h1, h2, h3, p, label {
     margin-top: 8px;
 }
 
-/* Purple multiselect tags */
+
+/* Premium Violet Multiselect Tags */
+
 .stMultiSelect [data-baseweb="tag"] {
-    background-color: #6336e8 !important;
+    background-color: #6c35ff !important;
+    border: 1px solid #8b68ff !important;
     border-radius: 8px !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(108, 53, 255, 0.25);
 }
 
 .stMultiSelect [data-baseweb="tag"] span {
-    color: white !important;
+    color: #ffffff !important;
 }
 
+.stMultiSelect [data-baseweb="tag"] svg {
+    fill: #ffffff !important;
+}
+
+
 /* Dark input boxes */
+
 div[data-baseweb="select"] > div {
     background-color: #151517 !important;
     border-color: #303038 !important;
@@ -164,12 +185,16 @@ input {
     color: white !important;
 }
 
+
 /* Radio buttons */
+
 [data-testid="stRadio"] label {
     color: #bdbdc5 !important;
 }
 
+
 /* Metrics */
+
 [data-testid="stMetric"] {
     background: #141416;
     border: 1px solid #29292f;
@@ -186,7 +211,10 @@ input {
 }
 
 </style>
+
 """, unsafe_allow_html=True)
+
+
 
 # =========================================================
 # LOAD DATA
@@ -209,6 +237,7 @@ def load_data():
     ]
 
     for col in numeric_columns:
+
         df[col] = pd.to_numeric(
             df[col],
             errors="coerce"
@@ -219,6 +248,8 @@ def load_data():
 
 df = load_data()
 
+
+
 # =========================================================
 # SIDEBAR
 # =========================================================
@@ -226,7 +257,7 @@ df = load_data()
 with st.sidebar:
 
     st.markdown(
-        '<div class="brand">◕ ADS<span>TIV</span></div>',
+        '<div class="brand">META <span>ADS</span></div>',
         unsafe_allow_html=True
     )
 
@@ -251,15 +282,23 @@ with st.sidebar:
     st.markdown(
         """
         <div class="insight">
+
         <div class="insight-title">PORTFOLIO PROJECT</div>
+
         <div class="insight-value">Meta Ads Analytics</div>
+
         <div class="insight-text">
+
         Facebook & Instagram campaign performance dashboard.
+
         </div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
+
+
 
 # =========================================================
 # HEADER
@@ -274,6 +313,8 @@ st.markdown(
     '<div class="subtitle">Facebook & Instagram Campaign Performance Dashboard</div>',
     unsafe_allow_html=True
 )
+
+
 
 # =========================================================
 # FILTERS
@@ -307,6 +348,8 @@ with filter3:
         default=sorted(df["platform"].unique())
     )
 
+
+
 # =========================================================
 # FILTER DATA
 # =========================================================
@@ -332,30 +375,41 @@ if platforms:
         data["platform"].isin(platforms)
     ]
 
+
+
 # =========================================================
 # KPI CALCULATIONS
 # =========================================================
 
 spend = data["spend"].sum()
+
 impressions = data["impressions"].sum()
+
 clicks = data["clicks"].sum()
+
 conversions = data["conversions"].sum()
+
 leads = data["leads"].sum()
+
 
 ctr = (
     clicks / impressions * 100
     if impressions > 0 else 0
 )
 
+
 cpc = (
     spend / clicks
     if clicks > 0 else 0
 )
 
+
 cost_conversion = (
     spend / conversions
     if conversions > 0 else 0
 )
+
+
 
 # =========================================================
 # KPI CARDS
@@ -385,13 +439,19 @@ for col, item in zip(
     col.markdown(
         f"""
         <div class="card">
+
         <div class="card-label">{title}</div>
+
         <div class="card-value">{value}</div>
+
         <div class="card-note">{note}</div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
+
+
 
 # =========================================================
 # SECOND KPI ROW
@@ -400,9 +460,14 @@ for col, item in zip(
 k1, k2, k3, k4 = st.columns(4)
 
 k1.metric("CTR", f"{ctr:.2f}%")
+
 k2.metric("CPC", f"₹{cpc:.2f}")
+
 k3.metric("LEADS", f"{leads:,.0f}")
+
 k4.metric("COST / CONVERSION", f"₹{cost_conversion:.2f}")
+
+
 
 # =========================================================
 # ANALYTICS
@@ -422,6 +487,7 @@ daily = data.groupby(
     spend=("spend", "sum"),
     conversions=("conversions", "sum")
 )
+
 
 with left:
 
@@ -460,6 +526,7 @@ with left:
         fig,
         use_container_width=True
     )
+
 
 with right:
 
@@ -502,6 +569,8 @@ with right:
         use_container_width=True
     )
 
+
+
 # =========================================================
 # CAMPAIGN PERFORMANCE
 # =========================================================
@@ -517,22 +586,28 @@ campaign = data.groupby(
     leads=("leads", "sum")
 )
 
+
 campaign["ctr"] = (
     campaign["clicks"] /
     campaign["impressions"].replace(0, pd.NA)
 ) * 100
+
 
 campaign["cpc"] = (
     campaign["spend"] /
     campaign["clicks"].replace(0, pd.NA)
 )
 
+
 campaign["cost_conversion"] = (
     campaign["spend"] /
     campaign["conversions"].replace(0, pd.NA)
 )
 
+
 campaign = campaign.fillna(0)
+
+
 
 # =========================================================
 # CAMPAIGN PAGE
@@ -546,6 +621,7 @@ if page in ["Overview", "Campaigns"]:
     )
 
     a, b = st.columns(2)
+
 
     with a:
 
@@ -575,6 +651,7 @@ if page in ["Overview", "Campaigns"]:
             use_container_width=True
         )
 
+
     with b:
 
         fig = px.bar(
@@ -603,6 +680,8 @@ if page in ["Overview", "Campaigns"]:
             use_container_width=True
         )
 
+
+
 # =========================================================
 # PLATFORM
 # =========================================================
@@ -624,19 +703,23 @@ if page in ["Overview", "Platforms"]:
         conversions=("conversions", "sum")
     )
 
+
     platform["ctr"] = (
         platform["clicks"] /
         platform["impressions"].replace(0, pd.NA)
     ) * 100
+
 
     platform["cost_conversion"] = (
         platform["spend"] /
         platform["conversions"].replace(0, pd.NA)
     )
 
+
     platform = platform.fillna(0)
 
     a, b = st.columns(2)
+
 
     with a:
 
@@ -664,6 +747,7 @@ if page in ["Overview", "Platforms"]:
             use_container_width=True
         )
 
+
     with b:
 
         fig = px.bar(
@@ -690,6 +774,8 @@ if page in ["Overview", "Platforms"]:
             use_container_width=True
         )
 
+
+
 # =========================================================
 # BUSINESS INSIGHTS
 # =========================================================
@@ -698,6 +784,7 @@ st.markdown(
     '<div class="section">Business Insights</div>',
     unsafe_allow_html=True
 )
+
 
 if len(campaign) > 0:
 
@@ -716,52 +803,76 @@ else:
     best = "-"
     expensive = "-"
 
+
 a, b, c = st.columns(3)
+
 
 with a:
 
     st.markdown(
         f"""
         <div class="insight">
+
         <div class="insight-title">TOP CONVERSION CAMPAIGN</div>
+
         <div class="insight-value">{best}</div>
+
         <div class="insight-text">
+
         Highest conversion volume in the selected data.
+
         </div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
+
 
 with b:
 
     st.markdown(
         f"""
         <div class="insight">
+
         <div class="insight-title">HIGH COST / CONVERSION</div>
+
         <div class="insight-value">{expensive}</div>
+
         <div class="insight-text">
+
         Campaign with the highest acquisition cost.
+
         </div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
+
 
 with c:
 
     st.markdown(
         f"""
         <div class="insight">
+
         <div class="insight-title">DATASET</div>
+
         <div class="insight-value">{len(data):,} Rows</div>
+
         <div class="insight-text">
+
         Synthetic portfolio dataset used for demonstration.
+
         </div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
+
+
 
 # =========================================================
 # FOOTER
